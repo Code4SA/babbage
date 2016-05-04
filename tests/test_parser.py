@@ -15,13 +15,15 @@ class ParserTestCase(TestCase):
         model = load_json_fixture('models/simple_model.json')
         self.cube = Cube(self.engine, 'simple', model)
 
-    def test_cuts(self):
+    def test_cuts_unquoted_string(self):
         cuts = Cuts(self.cube).parse('foo:bar')
         assert len(cuts) == 1, cuts
+        assert ('foo', ':', ['bar']) in cuts, cuts
 
-    def test_cuts_quoted(self):
+    def test_cuts_quoted_string(self):
         cuts = Cuts(self.cube).parse('foo:"bar lala"')
         assert len(cuts) == 1, cuts
+        assert ('foo', ':', ['bar lala']) in cuts, cuts
 
     def test_cuts_string_set(self):
         cuts = Cuts(self.cube).parse('foo:"bar";"lala"')
