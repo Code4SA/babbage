@@ -19,6 +19,16 @@ class ParserTestCase(TestCase):
         cuts = Cuts(self.cube).parse('foo:bar')
         assert len(cuts) == 1, cuts
 
+    def test_cuts_missing_value(self):
+        cuts = Cuts(self.cube).parse('foo:')
+        assert len(cuts) == 1, cuts
+        assert ('foo', ':', ['']) in cuts, cuts
+
+    def test_cuts_empty_string(self):
+        cuts = Cuts(self.cube).parse('foo:""')
+        assert len(cuts) == 1, cuts
+        assert ('foo', ':', ['']) in cuts, cuts
+
     def test_cuts_quoted(self):
         cuts = Cuts(self.cube).parse('foo:"bar lala"')
         assert len(cuts) == 1, cuts
