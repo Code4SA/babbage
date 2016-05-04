@@ -22,13 +22,14 @@ direction = 'asc' | 'desc' ;
 
 ref = ?/[A-Za-z0-9\._]*[A-Za-z0-9]/? ;
 
-value = date_set | int_set | string_set ;
+value = date_set | int_set | string_set | null_value ;
 date_value = ?/[0-9]{4}-[0-9]{2}-[0-9]{2}/? ;
 date_set = ';'.{ >date_value } ;
 int_value = ?/[0-9]+/? !/[^0-9|;]+/ ;
 int_set =  ';'.{ >int_value } ;
-string_value = escaped_string | {?/[^|]*/?} ;
+string_value = escaped_string | ?/[^|]+/? ;
 string_set = ';'.{ >string_value } ;
 escaped_string = ESCAPED_STRING ;
 ESCAPED_STRING = '"'  @:{?/[^"\\\\]*/?|ESC} '"' ;
 ESC = ?/\\\\['"\\\\nrtbfv]/? | ?/\\\\u[a-fA-F0-9]{4}/? ;
+null_value = null_value:`null_value` ;

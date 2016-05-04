@@ -25,8 +25,6 @@ class Parser(object):
 
     def string_value(self, ast):
         text = ast[0]
-        if text.startswith('"') and text.endswith('"'):
-            return json.loads(text)
         return text
 
     def string_set(self, ast):

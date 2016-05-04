@@ -4,12 +4,14 @@ from sqlalchemy import cast
 from babbage.query.parser import Parser
 from babbage.exc import QueryException
 
+from grako import AST
 
 class Cuts(Parser):
     """ Handle parser output for cuts. """
     start = "cuts"
 
     def cut(self, ast):
+        print('cuts.cut', ast)
         value = ast[2]
         if isinstance(value, six.string_types) and len(value.strip()) == 0:
             value = None
@@ -27,5 +29,8 @@ class Cuts(Parser):
             info.append({'ref': ref, 'operator': operator, 'value': value})
             table, column = self.cube.model[ref].bind(self.cube)
             q = self.ensure_table(q, table)
-            q = q.where(column.in_( value))
+            if isinstance(AST, value) and 'null_value' in value:
+                q = q.where(column.is_(None))
+            else:
+                q = q.where(column.in_(value))
         return info, q
