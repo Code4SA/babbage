@@ -30,13 +30,16 @@ class Parser(object):
         return text
 
     def string_set(self, ast):
-        return map(lambda x: x[0], ast)
+        return map(self.string_value, ast)
 
     def int_value(self, ast):
         return int(ast)
 
     def int_set(self, ast):
-        return map(lambda x: int(x), ast)
+        return map(self.int_value, ast)
+
+    def date_set(self, ast):
+        return map(self.date_value, ast)
 
     def date_value(self, ast):
         return dateutil.parser.parse(ast).date()

@@ -49,7 +49,7 @@ class ParserTestCase(TestCase):
 
     def test_cuts_date(self):
         cuts = Cuts(self.cube).parse('foo:2015-01-04')
-        assert cuts[0][2] == date(2015, 1, 4), cuts
+        assert cuts[0][2] == [date(2015, 1, 4)], cuts
 
     def test_cuts_int(self):
         cuts = Cuts(self.cube).parse('foo:2015')
@@ -57,7 +57,7 @@ class ParserTestCase(TestCase):
 
     def test_cuts_int_prefixed_string(self):
         cuts = Cuts(self.cube).parse('foo:2015M01')
-        assert cuts[0][2] == '2015M01', cuts
+        assert cuts[0][2] == ['2015M01'], cuts
 
     @raises(QueryException)
     def test_cuts_invalid(self):
