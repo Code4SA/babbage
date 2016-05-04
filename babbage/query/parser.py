@@ -29,8 +29,14 @@ class Parser(object):
             return json.loads(text)
         return text
 
+    def string_set(self, ast):
+        return map(lambda x: x[0], ast)
+
     def int_value(self, ast):
         return int(ast)
+
+    def int_set(self, ast):
+        return map(lambda x: int(x), ast)
 
     def date_value(self, ast):
         return dateutil.parser.parse(ast).date()

@@ -24,24 +24,24 @@ class ParserTestCase(TestCase):
         assert len(cuts) == 1, cuts
 
     def test_cuts_string_set(self):
-        cuts = Cuts(self.cube).parse('foo:"bar","lala"')
+        cuts = Cuts(self.cube).parse('foo:"bar";"lala"')
         assert len(cuts) == 1, cuts
         assert ('foo', ':', ['bar', 'lala']) in cuts, cuts
 
     def test_cuts_int_set(self):
-        cuts = Cuts(self.cube).parse('foo:3,22')
+        cuts = Cuts(self.cube).parse('foo:3;22')
         assert len(cuts) == 1, cuts
         assert ('foo', ':', [3, 22]) in cuts, cuts
 
     def test_cuts_multiple(self):
         cuts = Cuts(self.cube).parse('foo:bar|bar:5')
         assert len(cuts) == 2, cuts
-        assert ('bar', ':', 5) in cuts, cuts
+        assert ('bar', ':', [5]) in cuts, cuts
 
     def test_cuts_multiple_int_first(self):
         cuts = Cuts(self.cube).parse('bar:5|foo:bar')
         assert len(cuts) == 2, cuts
-        assert ('bar', ':', 5) in cuts, cuts
+        assert ('bar', ':', [5]) in cuts, cuts
 
     def test_cuts_quotes(self):
         cuts = Cuts(self.cube).parse('foo:"bar|lala"|bar:5')
@@ -53,7 +53,7 @@ class ParserTestCase(TestCase):
 
     def test_cuts_int(self):
         cuts = Cuts(self.cube).parse('foo:2015')
-        assert cuts[0][2] == 2015, cuts
+        assert cuts[0][2] == [2015], cuts
 
     def test_cuts_int_prefixed_string(self):
         cuts = Cuts(self.cube).parse('foo:2015M01')
