@@ -1,5 +1,5 @@
 from babbage.exc import BindingException
-
+from babbage.parser.binding import Binding
 
 class Concept(object):
     """ A concept describes any branch of the model: dimensions, attributes,
@@ -47,6 +47,20 @@ class Concept(object):
         return False
 
     def _physical_column(self, cube, column_name):
+        """ Return the SQLAlchemy Column object matching a given, possibly
+        qualified, column name (i.e.: 'table.column'). If no table is named,
+        the fact table is assumed. """
+        table_name = self.model.fact_table_name
+        if '.' in column_name:
+            table_name, column_name = column_name.split('.', 1)
+        table = cube._load_table(table_name)
+        if column_name not in table.columns:
+            raise BindingException('Column %r does not exist on table %r' % (
+                                   column_name, table_name), table=table_name,
+                                   column=column_name)
+        return table, table.columns[column_name]
+
+    def _dimension_key_column(self, cube, column_name):
         """ Return the SQLAlchemy Column object matching a given, possibly
         qualified, column name (i.e.: 'table.column'). If no table is named,
         the fact table is assumed. """

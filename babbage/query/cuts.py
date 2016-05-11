@@ -56,7 +56,7 @@ class Cuts(Parser):
         for (ref, operator, value) in self.parse(cuts):
             self._check_type(ref, value)
             info.append({'ref': ref, 'operator': operator, 'value': value})
-            table, column = self.cube.model[ref].bind(self.cube)
-            q = self.ensure_table(q, table)
+            binding = self.cube.model[ref].bind(self.cube)
+            q = self.ensure_table(q, binding)
             q = q.where(column.in_(value))
         return info, q

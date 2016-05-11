@@ -57,7 +57,10 @@ class Parser(object):
 
     def ensure_table(self, q, table):
         if table not in q.froms:
-            q = q.select_from(table)
+            if self.cube.fact_table == table:
+                q = q.select_from(table)
+            else:
+                q = q.join(self.cube.fact_table, table,
         return q
 
     @staticmethod
