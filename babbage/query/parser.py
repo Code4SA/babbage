@@ -56,12 +56,8 @@ class Parser(object):
             text = []
         return text
 
-    def ensure_table(self, q, table):
-        if table not in q.froms:
-            q = q.select_from(table)
-        return q
-
     def ensure_table2(self, q, ref_table, ref):
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>> %r" % map(lambda t: t.name, q.froms))
         self.tables.append((ref_table, ref))
         return q
 

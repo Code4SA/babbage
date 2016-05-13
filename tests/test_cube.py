@@ -90,6 +90,10 @@ class CubeTestCase(TestCase):
         assert len(facts['data']) == 5, len(facts['data'])
 
     def test_facts_sort(self):
+        import logging
+
+        logging.basicConfig()
+        logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
         facts = self.cube.facts(order='amount:desc')
         assert facts['total_fact_count'] == 36, facts['total_fact_count']
         facts = facts['data']
