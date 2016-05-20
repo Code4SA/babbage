@@ -83,6 +83,24 @@ class CubeTestCase(TestCase):
         assert facts['total_fact_count'] == 21, facts
         assert len(facts['data']) == 21, len(facts['data'])
 
+    def test_facts_star_filter_and_facts_field(self):
+        facts = self.cube.facts(cuts='cap_or_cur.label:"Current Expenditure"',
+                                fields='cofog1')
+        assert facts['total_fact_count'] == 21, facts
+        assert len(facts['data']) == 21, len(facts['data'])
+
+    def test_facts_star_filter_and_field(self):
+        facts = self.cube.facts(cuts='cap_or_cur.label:"Current Expenditure"',
+                                fields='cap_or_cur.code')
+        assert facts['total_fact_count'] == 21, facts
+        assert len(facts['data']) == 21, len(facts['data'])
+
+    def test_facts_facts_filter_and_star_field(self):
+        facts = self.cube.facts(cuts='cofog1:"4"',
+                                fields='cap_or_cur.code')
+        assert facts['total_fact_count'] == 12, facts
+        assert len(facts['data']) == 12, len(facts['data'])
+
     @raises(QueryException)
     def test_facts_cut_type_error(self):
         self.cube.facts(cuts='cofog1:4')
@@ -181,6 +199,16 @@ class CubeTestCase(TestCase):
         assert 'cofog1.name' in row0, row0
         assert 'amount.sum' not in row0, row0
         assert 'amount' not in row0, row0
+
+    def test_aggregate_star_count_only(self):
+        aggs = self.cube.aggregate(drilldowns='cap_or_cur',
+                                   order='cap_or_cur',
+                                   aggregates='_count')
+        assert aggs['total_cell_count'] == 2, aggs
+        assert len(aggs['cells']) == 2, len(aggs['data'])
+        row0 = aggs['cells'][0]
+        assert row0['cap_or_cur.code'] == 'CAP', row0
+        assert row0['_count'] == 15, row0
 
     def test_aggregate_empty(self):
         aggs = self.cube.aggregate(drilldowns='cofog1', page_size=0)
