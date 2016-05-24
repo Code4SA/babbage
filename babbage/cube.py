@@ -4,6 +4,7 @@ from sqlalchemy.sql.expression import select
 
 from babbage.model import Model
 from babbage.model.dimension import Dimension
+from babbage.model.star_key_attribute import StarKeyAttr
 from babbage.query import count_results, generate_results, first_result
 from babbage.query import Cuts, Drilldowns, Fields, Ordering, Aggregates
 from babbage.query import Pagination
@@ -161,7 +162,7 @@ class Cube(object):
                     dimension = concept
                 else:
                     dimension = concept.dimension
-                dimension_table, key_column = dimension.key_attribute.bind(self)
+                dimension_table, key_column = StarKeyAttr(dimension.key_attribute).bind_star_column(self)
                 if binding.table != dimension_table:
                     raise BindingException('Attributes must be of same table as '
                                            'as their dimension key')
