@@ -19,19 +19,24 @@ class Cube(object):
         self.name = name
         if not isinstance(model, Model):
             model = Model(model)
-        self._fact_table = fact_table
+        self._tables = {}
+        if fact_table is not None:
+            self._tables[model.fact_table_name] = fact_table
         self.model = model
         self.engine = engine
         self.meta = MetaData(bind=engine)
 
     def _load_table(self, name):
         """ Reflect a given table from the database. """
-        if name == self.model.fact_table_name and self._fact_table is not None:
-            return self._fact_table
+        table = self._tables.get(name, None)
+        if table is not None:
+            return table
         if not self.engine.has_table(name):
             raise BindingException('Table does not exist: %r' % name,
                                    table=name)
-        return Table(name, self.meta, autoload=True)
+        table = Table(name, self.meta, autoload=True)
+        self._tables[name] = table
+        return table
 
     @property
     def fact_pk(self):
@@ -46,8 +51,6 @@ class Cube(object):
 
     @property
     def fact_table(self):
-        if self._fact_table is not None:
-            return self._fact_table
         return self._load_table(self.model.fact_table_name)
 
     @property
